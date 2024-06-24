@@ -1,7 +1,7 @@
 package com.wygeeks.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.wygeeks.util.PhoneNumber;
+import com.wygeeks.util.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -9,6 +9,8 @@ import org.springframework.format.annotation.DateTimeFormat;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+
+import static com.wygeeks.util.Gender.*;
 
 @Getter
 @Setter
@@ -32,6 +34,17 @@ public class UserRequestDTO implements Serializable {
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     @JsonFormat(pattern = "MM/dd/yyyy")
     private Date dateOfBirth;
+
+//    @Pattern(regexp = "^ACTIVE|INACTIVE|NONE$", message = "status must be one in {ACTIVE, INACTIVE, NONE}")
+    @EnumPattern(name = "status", regexp = "ACTIVE|INACTIVE|NONE")
+    private UserStatus status;
+
+    @GenderSubset(anyOf = {MALE, FEMALE, OTHER})
+    private Gender gender;
+
+    @NotNull(message = "type must be not null")
+    @EnumValue(name = "type", enumClass = UserType.class)
+    private String type;
 
     @NotEmpty(message = "permissions must be not empty") // Khong cho phep gia tri rong
     private List<String> permissions;

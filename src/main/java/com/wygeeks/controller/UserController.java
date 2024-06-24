@@ -1,6 +1,8 @@
 package com.wygeeks.controller;
 
 import com.wygeeks.dto.request.UserRequestDTO;
+import com.wygeeks.util.Gender;
+import com.wygeeks.util.UserStatus;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import org.springframework.web.bind.annotation.*;
@@ -39,6 +41,9 @@ public class UserController {
     public UserRequestDTO getUser(@PathVariable int userId) {
         return new UserRequestDTO("Duy", "Le", "lppduy@gmail.com", "0975427777",
                 new Date("07/27/1997"),
+                UserStatus.ACTIVE,
+                Gender.MALE,
+                "ADMIN",
                 List.of("ADMIN", "USER")
         );
     }
@@ -52,10 +57,16 @@ public class UserController {
         return List.of(
                 new UserRequestDTO("Duy", "Le", "lppd1@gmail.com", "0975427777",
                         new Date("07/27/1997"),
+                        UserStatus.ACTIVE,
+                        Gender.MALE,
+                        "ADMIN",
                         List.of("ADMIN", "USER")
                 ),
                 new UserRequestDTO("Duy", "Le", "lppd2@gmail.com", "0975427777",
                         new Date("07/27/1997"),
+                        UserStatus.ACTIVE,
+                        Gender.MALE,
+                        "ADMIN",
                         List.of("ADMIN", "USER")
                 )
         );
