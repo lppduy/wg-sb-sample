@@ -9,6 +9,7 @@ import com.wygeeks.util.Gender;
 import com.wygeeks.util.UserStatus;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +20,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/user")
 @Validated
+@Slf4j
 public class UserController {
 
     private final UserService userService;
@@ -35,7 +37,7 @@ public class UserController {
 //        if (user.getFirstName().equals("Duy")) {
 //            return new ResponseError(HttpStatus.BAD_REQUEST.value(), "User already exists");
 //        }
-
+        log.info("Creating user= {}", user.getFirstName());
         return new ResponseData<>(HttpStatus.CREATED.value(), "User created", user);
     }
 
@@ -51,7 +53,7 @@ public class UserController {
 
     @DeleteMapping("/{userId}")
     public ResponseData<?> deleteUser(@PathVariable @Min(value = 1, message = "userId must be greater than 0") int userId) {
-        System.out.println("Request delete userId=" + userId);
+        log.info("Deleting user with id={}", userId);
         userService.deleteUser(userId);
         return new ResponseData<>(HttpStatus.NO_CONTENT.value(), "User deleted successfully");
 //        try {
