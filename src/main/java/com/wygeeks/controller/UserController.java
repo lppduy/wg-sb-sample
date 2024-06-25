@@ -3,11 +3,14 @@ package com.wygeeks.controller;
 import com.wygeeks.dto.request.UserRequestDTO;
 import com.wygeeks.dto.response.ResponseData;
 import com.wygeeks.dto.response.ResponseError;
+import com.wygeeks.exception.ResourceNotFoundException;
+import com.wygeeks.service.UserService;
 import com.wygeeks.util.Gender;
 import com.wygeeks.util.UserStatus;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
@@ -15,33 +18,48 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/user")
+@Validated
 public class UserController {
+
+    private final UserService userService;
+
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
 
 //    @PostMapping(value = "/", headers = "apiKey=v1.0")
 //    @RequestMapping(value = "/", method = RequestMethod.POST, headers ="apiKey=v1.0")
     @PostMapping("/")
     public ResponseData<UserRequestDTO> addUser(@Valid @RequestBody UserRequestDTO user) {
 
-        if (user.getFirstName().equals("Duy")) {
-            return new ResponseError(HttpStatus.BAD_REQUEST.value(), "User already exists");
-        }
+//        if (user.getFirstName().equals("Duy")) {
+//            return new ResponseError(HttpStatus.BAD_REQUEST.value(), "User already exists");
+//        }
 
         return new ResponseData<>(HttpStatus.CREATED.value(), "User created", user);
     }
 
     @PutMapping("/{userId}")
-    public ResponseData<UserRequestDTO> updateUser(@PathVariable int userId, @Valid @RequestBody UserRequestDTO user) {
+    public ResponseData<UserRequestDTO> updateUser(@PathVariable("userId") @Min(value = 1, message = "userId must be greater than 0") int userId, @Valid @RequestBody UserRequestDTO user) {
         return new ResponseData<>(HttpStatus.OK.value(), "User updated", user);
     }
 
     @PatchMapping("/{userId}")
-    public ResponseData<String> updateStatus(@PathVariable @Min(1) int userId, @RequestParam @Min(1) int status) {
+    public ResponseData<String> updateStatus(@PathVariable @Min(value = 1, message = "userId must be greater than 0") int userId, @RequestParam @Min(1) int status) {
         return new ResponseData<>(HttpStatus.ACCEPTED.value(), "User status updated");
     }
 
     @DeleteMapping("/{userId}")
-    public ResponseData<String> deleteUser(@Min(1) @PathVariable int userId){
-        return new ResponseData<>(HttpStatus.NO_CONTENT.value(), "User deleted");
+    public ResponseData<?> deleteUser(@PathVariable @Min(value = 1, message = "userId must be greater than 0") int userId) {
+        System.out.println("Request delete userId=" + userId);
+        userService.deleteUser(userId);
+        return new ResponseData<>(HttpStatus.NO_CONTENT.value(), "User deleted successfully");
+//        try {
+//            userService.deleteUser(userId);
+//            return new ResponseData<>(HttpStatus.NO_CONTENT.value(), "User deleted successfully");
+//        } catch (ResourceNotFoundException e) {
+//            return new ResponseError(HttpStatus.NOT_FOUND.value(), e.getMessage());
+//        }
     }
 
     @GetMapping("/{userId}")
