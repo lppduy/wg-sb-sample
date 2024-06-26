@@ -1,5 +1,6 @@
 package com.wygeeks.controller;
 
+import com.wygeeks.config.Translator;
 import com.wygeeks.dto.request.UserRequestDTO;
 import com.wygeeks.dto.response.ResponseData;
 import com.wygeeks.dto.response.ResponseError;
@@ -38,12 +39,12 @@ public class UserController {
 //            return new ResponseError(HttpStatus.BAD_REQUEST.value(), "User already exists");
 //        }
         log.info("Creating user= {}", user.getFirstName());
-        return new ResponseData<>(HttpStatus.CREATED.value(), "User created", user);
+        return new ResponseData<>(HttpStatus.CREATED.value(), Translator.toLocale("user.add.success"), user);
     }
 
     @PutMapping("/{userId}")
     public ResponseData<UserRequestDTO> updateUser(@PathVariable("userId") @Min(value = 1, message = "userId must be greater than 0") int userId, @Valid @RequestBody UserRequestDTO user) {
-        return new ResponseData<>(HttpStatus.OK.value(), "User updated", user);
+        return new ResponseData<>(HttpStatus.OK.value(), Translator.toLocale("user.upd.success"), user);
     }
 
     @PatchMapping("/{userId}")
